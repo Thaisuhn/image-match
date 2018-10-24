@@ -3,7 +3,7 @@ version: '2'
 services:
 
   image-match:
-    build: 
+    build:
       context: .
     image: ascribe/image-match
     container_name: image-match
@@ -13,7 +13,7 @@ services:
      - "elasticsearch"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
     container_name: elasticsearch
     environment:
       - xpack.security.enabled=false
@@ -27,7 +27,7 @@ services:
       - "9200:9200"
 
   bdocs:
-    build: 
+    build:
       context: .
     image: ascribe/image-match
     container_name: bdocs
@@ -35,7 +35,7 @@ services:
       - .:/usr/src/app/
     working_dir: /usr/src/app/docs
     command: make html
-    
+
   vdocs:
     image: nginx:alpine
     ports:
