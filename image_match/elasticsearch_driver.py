@@ -66,7 +66,17 @@ class SignatureES(SignatureDatabaseBase):
 
         res = self.es.search(index=self.index,
                               doc_type=self.doc_type,
-                              body=body,
+                              body={'query': {
+                                       'bool': {'should': should,
+                                        "must":{
+                                          "match":{
+                                            "metadata.supplier":"Amazon"
+                                          }
+                                        }
+                                       }
+                                     },
+                                    '_source': {'excludes': ['simple_word_*']}
+                                   },
                               size=self.size,
                               timeout=self.timeout)['hits']['hits']
 
