@@ -5,7 +5,7 @@ services:
   image-match:
     build:
       context: .
-    image: ascribe/image-match
+    image: docdocwhostheres/image-match
     container_name: image-match
     volumes:
       - .:/usr/src/app/
