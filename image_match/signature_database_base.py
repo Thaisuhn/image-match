@@ -206,7 +206,6 @@ class SignatureDatabaseBase(object):
 
         """
         rec = make_record(path, self.gis, self.k, self.N, img=img, bytestream=bytestream, metadata=metadata)
-        self.delete_duplicates(path)
         self.insert_single_record(rec, refresh_after=refresh_after)
 
     def search_image(self, path, all_orientations=False, bytestream=False, pre_filter=None):
