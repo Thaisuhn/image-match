@@ -46,7 +46,7 @@ class SignatureES(SignatureDatabaseBase):
 
         super(SignatureES, self).__init__(*args, **kwargs)
 
-    def search_single_record(self, rec, pre_filter=None):
+    def search_single_record(self, rec, pre_filter=None,supplier=None):
         path = rec.pop('path')
         signature = rec.pop('signature')
         if 'metadata' in rec:
@@ -70,7 +70,7 @@ class SignatureES(SignatureDatabaseBase):
                                        'bool': {'should': should,
                                         "must":{
                                           "match":{
-                                            "metadata.supplier":"Amazon"
+                                            "metadata.supplier":supplier
                                           }
                                         }
                                        }
@@ -98,6 +98,12 @@ class SignatureES(SignatureDatabaseBase):
         formatted_res = filter(lambda y: y['dist'] < self.distance_cutoff, formatted_res)
 
         return formatted_res
+
+
+    def update_single_record(self, rec, refresh_after=False):
+        # will modify in the future to create an actual upsert/update method
+        rec['timestamp'] = datetime.now()
+        self.es.index(index=self.index, doc_type=self.doc_type, body=rec, refresh=refresh_after)
 
     def insert_single_record(self, rec, refresh_after=False):
         rec['timestamp'] = datetime.now()
