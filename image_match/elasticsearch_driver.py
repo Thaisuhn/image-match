@@ -99,6 +99,16 @@ class SignatureES(SignatureDatabaseBase):
 
         return formatted_res
 
+    def search_for_id(self,image_url):
+      matches = self.es.search(index=self.index,
+                        _source='_id',
+                        q='path:' + json.dumps(image_url))
+      return [m['_id'] for m in matches['hits']['hits']]
+
+    def delete_records(self, image_url, refresh_after=False):
+        ids = self.search_for_id(image_url)
+        for i in ids:
+          self.es.delete(index=self.index, doc_type=self.doc_type, id=i, ignore=404)
 
     def update_single_record(self, rec, refresh_after=False):
         # will modify in the future to create an actual upsert/update method
