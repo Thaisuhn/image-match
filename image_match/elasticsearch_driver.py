@@ -79,7 +79,6 @@ class SignatureES(SignatureDatabaseBase):
                                    },
                               size=self.size,
                               timeout=self.timeout)['hits']['hits']
-        self.delete_duplicates(path)
         sigs = np.array([x['_source']['signature'] for x in res])
 
         if sigs.size == 0:
