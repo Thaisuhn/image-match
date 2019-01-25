@@ -2,6 +2,7 @@ from skimage.color import rgb2gray
 from skimage.io import imread
 from PIL import Image
 from PIL.MpoImagePlugin import MpoImageFile
+import requests
 try:
     from cairosvg import svg2png
 except ImportError:
@@ -189,6 +190,24 @@ class ImageSignature(object):
         # Step 5: Flatten array and return signature
         return np.ravel(diff_mat).astype('int8')
 
+    def download_image(self,image_url):
+        # should check if url, else return path
+        # does file exists ?, if it does return path
+        # else download, return path
+        if "http" not in image_url:
+            # might be a file or file_path
+            return image_url
+        path = os.getcwd() + "/images/"
+        file_name = re.sub(r"((https|http):\/\/)|(\/)|(www\.)|(\?+.*)","",image_url,flags=re.S)
+        full_file_name = str(path+file_name)
+        if os.path.exists(full_file_name):
+            return full_file_name
+        r = requests.get(image_url, stream=True)
+        with open(full_file_name, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=128):
+                fd.write(chunk)
+        return full_file_name
+
     @staticmethod
     def preprocess_image(image_or_path, bytestream=False, handle_mpo=False):
         """Loads an image and converts to greyscale.
@@ -236,14 +255,18 @@ class ImageSignature(object):
             return rgb2gray(np.asarray(img, dtype=np.uint8))
         elif type(image_or_path) in string_types or \
              type(image_or_path) is text_type:
-            return imread(image_or_path, as_gray=True)
+            # Download Image and Return Path
+            file_path = self.download_image(image_or_path)
+            return imread(file_path, as_gray=True)
         elif type(image_or_path) is bytes:
             try:
                 img = Image.open(image_or_path)
                 arr = np.array(img.convert('RGB'))
             except IOError:
                 # try again due to PIL weirdness
-                return imread(image_or_path, as_gray=True)
+                # Download Image and Return Path
+                file_path = self.download_image(image_or_path)
+                return imread(file_path, as_gray=True)
             if handle_mpo:
                 # take the first images from the MPO
                 if arr.shape == (2,) and isinstance(arr[1].tolist(), MpoImageFile):

@@ -6,3 +6,5 @@
 Dockerfile
 LICENSES.md
 README.md
+image_match/images/*
+!image_match/images/.keep
