@@ -3,6 +3,8 @@ from skimage.io import imread
 from PIL import Image
 from PIL.MpoImagePlugin import MpoImageFile
 import requests
+import os
+import re
 try:
     from cairosvg import svg2png
 except ImportError:
@@ -157,7 +159,10 @@ class ImageSignature(object):
 
         """
 
-        # Step 1:    Load image as array of grey-levels
+        # Step 1a:    Download Image and return file_path
+        image_or_path = self.download_image(path_or_image)
+
+        # Step 1b:    Load image as array of grey-levels
         im_array = self.preprocess_image(path_or_image, handle_mpo=self.handle_mpo, bytestream=bytestream)
 
         # Step 2a:   Determine cropping boundaries
@@ -255,18 +260,14 @@ class ImageSignature(object):
             return rgb2gray(np.asarray(img, dtype=np.uint8))
         elif type(image_or_path) in string_types or \
              type(image_or_path) is text_type:
-            # Download Image and Return Path
-            file_path = self.download_image(image_or_path)
-            return imread(file_path, as_gray=True)
+            return imread(image_or_path, as_gray=True)
         elif type(image_or_path) is bytes:
             try:
                 img = Image.open(image_or_path)
                 arr = np.array(img.convert('RGB'))
             except IOError:
                 # try again due to PIL weirdness
-                # Download Image and Return Path
-                file_path = self.download_image(image_or_path)
-                return imread(file_path, as_gray=True)
+                return imread(image_or_path, as_gray=True)
             if handle_mpo:
                 # take the first images from the MPO
                 if arr.shape == (2,) and isinstance(arr[1].tolist(), MpoImageFile):
