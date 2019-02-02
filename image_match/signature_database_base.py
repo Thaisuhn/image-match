@@ -191,7 +191,6 @@ class SignatureDatabaseBase(object):
     def update_image(self, path, img=None, bytestream=False, metadata=None, refresh_after=False):
         rec = make_record(path, self.gis, self.k, self.N, img=img, bytestream=bytestream, metadata=metadata)
         self.update_single_record(rec, refresh_after=refresh_after)
-        self.delete_duplicates(path)
 
     def delete_image(self, image_url, img=None, bytestream=False, metadata=None, refresh_after=False):
         self.delete_records(image_url=image_url)
@@ -216,7 +215,6 @@ class SignatureDatabaseBase(object):
         """
         rec = make_record(path, self.gis, self.k, self.N, img=img, bytestream=bytestream, metadata=metadata)
         self.insert_single_record(rec, refresh_after=refresh_after)
-        self.delete_duplicates(path)
 
     def search_image(self, path, all_orientations=False, bytestream=False, pre_filter=None,supplier=None):
         """Search for matches
