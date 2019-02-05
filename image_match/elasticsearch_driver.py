@@ -133,4 +133,4 @@ class SignatureES(SignatureDatabaseBase):
                           if item['_source']['path'] == path]
         if len(matching_paths) > 0:
             for id_tag in matching_paths[1:]:
-                self.es.delete(index=self.index, doc_type=self.doc_type, id=id_tag)
+                self.es.delete(index=self.index, doc_type=self.doc_type, id=id_tag, ignore=404)
