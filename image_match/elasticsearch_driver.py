@@ -68,16 +68,18 @@ class SignatureES(SignatureDatabaseBase):
                               doc_type=self.doc_type,
                               body={'query': {
                                        'bool': {
-                                       'should': should,
-                                       "match":{
-                                         "metadata.title":title
-                                       },
-                                        "must_not":{
+                                         'must':{
                                           "match":{
-                                            "metadata.supplier":supplier
+                                            "metadata.title":title
                                           }
-                                        }
-                                       }
+                                         },
+                                         'should': should,
+                                            "must_not":{
+                                              "match":{
+                                                "metadata.supplier":supplier
+                                              }
+                                            }
+                                         }
                                      },
                                     '_source': {'excludes': ['simple_word_*']}
                                    },
