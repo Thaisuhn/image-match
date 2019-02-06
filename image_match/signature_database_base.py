@@ -217,7 +217,7 @@ class SignatureDatabaseBase(object):
         self.insert_single_record(rec, refresh_after=refresh_after)
         self.delete_duplicates(path)
 
-    def search_image(self, path, all_orientations=False, bytestream=False, pre_filter=None,supplier=None):
+    def search_image(self, path, all_orientations=False, bytestream=False, pre_filter=None,supplier=None,title=None):
         """Search for matches
 
         Args:
@@ -281,7 +281,7 @@ class SignatureDatabaseBase(object):
             # generate the signature
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
 
-            l = self.search_single_record(transformed_record, pre_filter=pre_filter,supplier=supplier)
+            l = self.search_single_record(transformed_record, pre_filter=pre_filter,supplier=supplier,title=title)
             result.extend(l)
 
         ids = set()
