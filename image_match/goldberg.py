@@ -163,7 +163,7 @@ class ImageSignature(object):
         image_or_path = self.download_image(path_or_image)
 
         # Step 1b:    Load image as array of grey-levels
-        im_array = self.preprocess_image(path_or_image, handle_mpo=self.handle_mpo, bytestream=bytestream)
+        im_array = self.preprocess_image(image_or_path, handle_mpo=self.handle_mpo, bytestream=bytestream)
 
         # Step 2a:   Determine cropping boundaries
         if self.crop_percentiles is not None:
